@@ -178,13 +178,10 @@ app.get("/api/history", async (req, res) => {
   }
 });
 
-// Serves static files from public/ folder
-app.use(express.static("public"));
+// Serves all static files from the public folder using absolute path
+app.use(express.static(__dirname + "/public"));
 
-// Serves index.html for the root path explicitly
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/public/index.html");
-});
+
 // Starts the server on the configured port
 app.listen(PORT, () => {
   console.log(`SentinelScope server running on port ${PORT}`);
