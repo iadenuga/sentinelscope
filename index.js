@@ -92,7 +92,11 @@ app.get("/api/scan/:target", async (req, res) => {
       os: shodanData.os || null,
       lastUpdate: shodanData.last_update || null,
       ports: shodanData.ports || [],
-      vulns: shodanData.vulns ? Object.keys(shodanData.vulns) : [],
+      vulns: Array.isArray(shodanData.vulns)
+        ? shodanData.vulns
+        : shodanData.vulns && typeof shodanData.vulns === "object"
+          ? Object.keys(shodanData.vulns)
+          : [],
       services: (shodanData.data || []).map((s) => ({
         port: s.port,
         transport: s.transport,
@@ -103,7 +107,7 @@ app.get("/api/scan/:target", async (req, res) => {
       hostnames: shodanData.hostnames || [],
       tags: shodanData.tags || [],
     };
-
+  
     res.json(shaped);
   } catch (err) {
     console.error("Scan endpoint error:", err.message);
@@ -174,6 +178,13 @@ app.get("/api/history", async (req, res) => {
   }
 });
 
+// Serves static files from public/ folder
+app.use(express.static("public"));
+
+// Serves index.html for the root path explicitly
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/public/index.html");
+});
 // Starts the server on the configured port
 app.listen(PORT, () => {
   console.log(`SentinelScope server running on port ${PORT}`);

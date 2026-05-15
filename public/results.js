@@ -47,6 +47,10 @@ async function runScan(target) {
     const res = await fetch(`${API_BASE}/api/scan/${encodeURIComponent(target)}`);
     const data = await res.json();
 
+    console.log("Full data from backend:", data);
+    console.log("Vulns from backend:", data.vulns);
+    console.log("First vuln entry:", data.vulns ? data.vulns[0] : "none");
+
     if (!res.ok) {
       showError(data.error || `Scan failed with HTTP ${res.status}`);
       return;
@@ -192,11 +196,25 @@ function renderRisk(data) {
   }, 150);
 }
 
+//clean the cves to match NVD expected input
+const cleanCve = (cve) => {
+  if (!cve) return null;
+  const upper = String(cve).toUpperCase().trim();
+  return /^CVE-\d{4}-\d{4,}$/.test(upper) ? upper : null;
+};
+
 // ── renderVulns ─────────────────────────────────────────────────
 // Renders CVE tags; each links to the NVD advisory page
+
 function renderVulns(data) {
+  console.log("renderVulns called");
+  console.log("data.vulns raw:", data.vulns);
+
   const container = document.getElementById("vulnContainer");
-  const vulns = data.vulns || [];
+  const vulns = (data.vulns || [])
+    
+    .map(cleanCve)
+    .filter(Boolean);
 
   if (!vulns.length) {
     container.innerHTML = `<p class="text-dim text-sm">No known CVEs detected for this host.</p>`;
@@ -206,7 +224,7 @@ function renderVulns(data) {
   const tags = vulns
     .map((cve) => `
       <a class="vuln-tag"
-         href="https://nvd.nist.gov/vuln/detail/${encodeURIComponent(cve)}"
+         href="https://nvd.nist.gov/vuln/detail/${cve}"
          target="_blank" rel="noopener">
         ${escHtml(cve)}
       </a>`)
