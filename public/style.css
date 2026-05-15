@@ -1,0 +1,392 @@
+/* ─── Google Fonts import ─────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600;900&display=swap');
+
+/* ─── Design token variables ──────────────────────────────────── */
+:root {
+  --bg:          #060a0f;
+  --bg-panel:    #0b1017;
+  --bg-card:     #0e1620;
+  --border:      #1a2d40;
+  --border-glow: #0ff;
+  --accent:      #00e5ff;
+  --accent-2:    #00ff9d;
+  --accent-warn: #ffb700;
+  --accent-danger:#ff3c5a;
+  --text:        #c8dde8;
+  --text-dim:    #4a6a7c;
+  --text-bright: #e8f6fc;
+  --font-mono:   'Share Tech Mono', monospace;
+  --font-ui:     'Rajdhani', sans-serif;
+  --font-display:'Exo 2', sans-serif;
+  --radius:      4px;
+  --transition:  0.2s ease;
+}
+
+/* ─── Reset & base ────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Subtle grid overlay on the background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+a { color: var(--accent); text-decoration: none; transition: color var(--transition); }
+a:hover { color: var(--accent-2); }
+
+img { max-width: 100%; display: block; }
+
+/* ─── Navigation ──────────────────────────────────────────────── */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(6, 10, 15, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.3rem;
+  letter-spacing: 0.08em;
+  color: var(--text-bright);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-logo span { color: var(--accent); }
+
+.nav-links {
+  display: flex;
+  gap: 0.25rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 0.4rem 0.9rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  transition: all var(--transition);
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--accent);
+  border-color: var(--border);
+  background: rgba(0,229,255,0.05);
+}
+
+/* ─── Page wrapper ────────────────────────────────────────────── */
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem 6rem;
+}
+
+/* ─── Section heading ─────────────────────────────────────────── */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+  opacity: 0.8;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 2rem;
+  color: var(--text-bright);
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+/* ─── Card component ──────────────────────────────────────────── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Top edge accent line on cards */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+}
+
+/* ─── Button styles ───────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.7rem 1.6rem;
+  border-radius: var(--radius);
+  border: 1px solid;
+  cursor: pointer;
+  transition: all var(--transition);
+  background: transparent;
+}
+
+.btn-primary {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-primary:hover {
+  background: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 0 20px rgba(0,229,255,0.3);
+}
+
+.btn-secondary {
+  border-color: var(--border);
+  color: var(--text-dim);
+}
+
+.btn-secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ─── Search / input ──────────────────────────────────────────── */
+.input-field {
+  width: 100%;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.85rem 1.2rem;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--text-bright);
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.input-field::placeholder { color: var(--text-dim); }
+
+.input-field:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,229,255,0.1);
+}
+
+/* ─── Risk badge ──────────────────────────────────────────────── */
+.risk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  padding: 0.3rem 0.7rem;
+  border-radius: 2px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.risk-low    { background: rgba(0,255,157,0.12); color: var(--accent-2);     border: 1px solid rgba(0,255,157,0.3); }
+.risk-medium { background: rgba(255,183,0,0.12); color: var(--accent-warn);  border: 1px solid rgba(255,183,0,0.3); }
+.risk-high   { background: rgba(255,60,90,0.12); color: var(--accent-danger);border: 1px solid rgba(255,60,90,0.3); }
+.risk-unknown{ background: rgba(74,106,124,0.2); color: var(--text-dim);     border: 1px solid var(--border); }
+
+/* ─── Table ───────────────────────────────────────────────────── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 0.6rem 1rem;
+  color: var(--accent);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  background: rgba(0,229,255,0.03);
+}
+
+.data-table td {
+  padding: 0.65rem 1rem;
+  color: var(--text);
+  border-bottom: 1px solid rgba(26,45,64,0.5);
+  vertical-align: top;
+}
+
+.data-table tr:last-child td { border-bottom: none; }
+
+.data-table tr:hover td { background: rgba(0,229,255,0.03); }
+
+/* ─── Loading spinner ─────────────────────────────────────────── */
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin: 2rem auto;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Toast notification ──────────────────────────────────────── */
+#toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  color: var(--text-bright);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  padding: 0.9rem 1.4rem;
+  border-radius: var(--radius);
+  z-index: 9999;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s ease;
+  max-width: 320px;
+}
+
+#toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ─── Stat box ────────────────────────────────────────────────── */
+.stat-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.2rem 1.5rem;
+  position: relative;
+}
+
+.stat-box-value {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 2.2rem;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.stat-box-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 0.3rem;
+}
+
+/* ─── Grid helpers ────────────────────────────────────────────── */
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+
+/* ─── Utility ─────────────────────────────────────────────────── */
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mt-4 { margin-top: 2rem; }
+.mt-5 { margin-top: 3rem; }
+
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+
+.text-mono { font-family: var(--font-mono); }
+.text-dim   { color: var(--text-dim); }
+.text-accent{ color: var(--accent); }
+.text-bright{ color: var(--text-bright); }
+.text-sm    { font-size: 0.85rem; }
+.text-xs    { font-size: 0.75rem; }
+.text-right { text-align: right; }
+
+.flex        { display: flex; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.gap-1 { gap: 0.5rem; }
+.gap-2 { gap: 1rem; }
+
+/* ─── Fade-in animation for content blocks ────────────────────── */
+.fade-in {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: fadeUp 0.4s ease forwards;
+}
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Staggered delays for multiple fade-in children */
+.fade-in:nth-child(1) { animation-delay: 0.05s; }
+.fade-in:nth-child(2) { animation-delay: 0.1s; }
+.fade-in:nth-child(3) { animation-delay: 0.15s; }
+.fade-in:nth-child(4) { animation-delay: 0.2s; }
+.fade-in:nth-child(5) { animation-delay: 0.25s; }
+
+/* ─── Responsive breakpoints ──────────────────────────────────── */
+@media (max-width: 900px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .grid-2,
+  .grid-3,
+  .grid-4 { grid-template-columns: 1fr; }
+  .page { padding: 2rem 1rem 4rem; }
+  .nav  { padding: 0 1rem; }
+}

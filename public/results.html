@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SentinelScope — Scan Results</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Chart.js — JS library 1: data visualization (ports, risk, services) -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
+  />
+  <!-- Leaflet.js — JS library 2: interactive geolocation map -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <!-- Chart.js loaded as a module-compatible CDN bundle -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+  <style>
+    /* ── Top target bar ── */
+    .target-bar {
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .target-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .target-value {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      color: var(--accent);
+      flex: 1;
+    }
+
+    /* ── Loading state ── */
+    #loadingState {
+      text-align: center;
+      padding: 6rem 0;
+    }
+
+    .scan-progress {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      margin-top: 1rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* Animated dots for the scanning indicator */
+    .scan-progress::after {
+      content: '...';
+      animation: dots 1.2s steps(3, end) infinite;
+    }
+
+    @keyframes dots {
+      0%  { content: ''; }
+      33% { content: '.'; }
+      66% { content: '..'; }
+      100%{ content: '...'; }
+    }
+
+    /* ── Main results grid ── */
+    #resultsContent { display: none; }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    /* ── Info sidebar ── */
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid rgba(26,45,64,0.5);
+      font-size: 0.85rem;
+    }
+
+    .info-row:last-child { border-bottom: none; }
+
+    .info-key {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      flex-shrink: 0;
+      margin-right: 1rem;
+    }
+
+    .info-val {
+      color: var(--text-bright);
+      font-size: 0.85rem;
+      text-align: right;
+      word-break: break-word;
+    }
+
+    /* ── Leaflet map container ── */
+    #map {
+      height: 260px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      margin-top: 1rem;
+      /* Dark tile filter to match site theme */
+      filter: brightness(0.7) saturate(0.5) hue-rotate(170deg);
+    }
+
+    /* ── Charts layout ── */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 260px;
+    }
+
+    /* ── Vuln tags ── */
+    .vuln-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+    }
+
+    .vuln-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 0.25rem 0.6rem;
+      background: rgba(255,60,90,0.1);
+      border: 1px solid rgba(255,60,90,0.3);
+      color: var(--accent-danger);
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background var(--transition);
+    }
+
+    .vuln-tag:hover {
+      background: rgba(255,60,90,0.2);
+    }
+
+    /* ── Services table banner ── */
+    .banner-text {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      background: var(--bg);
+      padding: 0.5rem 0.75rem;
+      border-radius: 2px;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 80px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ── Risk meter bar ── */
+    .risk-meter {
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+
+    .risk-meter-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.8s ease;
+    }
+
+    /* ── Search-again form at top of results ── */
+    .rescan-form {
+      display: flex;
+      gap: 0.6rem;
+      max-width: 500px;
+    }
+
+    @media (max-width: 900px) {
+      .results-grid  { grid-template-columns: 1fr; }
+      .charts-row    { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav class="nav">
+    <div class="nav-logo">⬡ Sentinel<span>Scope</span></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="results.html" class="active">Scanner</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Target bar ── -->
+  <div class="target-bar">
+    <div>
+      <p class="target-label">Current Target</p>
+      <p class="target-value" id="targetDisplay">—</p>
+    </div>
+
+    <!-- Re-scan form so users can search again without going back -->
+    <div class="rescan-form">
+      <input
+        id="rescanInput"
+        type="text"
+        class="input-field"
+        placeholder="Scan another target…"
+        style="font-size:0.85rem; padding:0.55rem 0.9rem;"
+        autocomplete="off"
+      />
+      <button class="btn btn-secondary" style="font-size:0.8rem; padding:0.55rem 1rem;" onclick="rescan()">
+        Scan
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Page content ── -->
+  <div class="page">
+
+    <!-- Loading state shown while the API call is in flight -->
+    <div id="loadingState">
+      <div class="spinner" style="width:48px; height:48px; border-width:3px;"></div>
+      <p class="scan-progress">Querying Shodan</p>
+    </div>
+
+    <!-- Error state — shown if scan fails -->
+    <div id="errorState" style="display:none; text-align:center; padding:4rem 0;">
+      <p style="font-size:2rem; margin-bottom:1rem;">⚠️</p>
+      <p class="section-title" style="color:var(--accent-danger);" id="errorMsg">Scan failed</p>
+      <p class="text-dim mt-2">Check the target and try again.</p>
+    </div>
+
+    <!-- All results content — hidden until data arrives -->
+    <div id="resultsContent">
+
+      <!-- ── Summary stats strip ── -->
+      <div class="grid-4 mt-2" id="statsStrip"></div>
+
+      <!-- ── Main grid: sidebar info + main panel ── -->
+      <div class="results-grid mt-3">
+
+        <!-- Left sidebar: host info + map -->
+        <div>
+          <div class="card fade-in">
+            <p class="section-label">Host Information</p>
+            <div id="hostInfo"></div>
+          </div>
+
+          <!-- Leaflet map rendered below host info -->
+          <div id="map" class="mt-2"></div>
+        </div>
+
+        <!-- Right panel: risk level + vulnerabilities + services table -->
+        <div>
+
+          <!-- Risk level card -->
+          <div class="card fade-in">
+            <p class="section-label">Exposure Risk</p>
+            <div style="display:flex; align-items:center; gap:1rem; margin-top:0.5rem;">
+              <span id="riskBadge" class="risk-badge risk-unknown">—</span>
+              <span class="text-dim text-sm" id="riskExplainer"></span>
+            </div>
+            <div class="risk-meter mt-2">
+              <div class="risk-meter-fill" id="riskFill" style="width:0%; background:var(--accent);"></div>
+            </div>
+          </div>
+
+          <!-- Vulnerabilities card -->
+          <div class="card fade-in mt-2">
+            <p class="section-label">Known Vulnerabilities (CVEs)</p>
+            <div id="vulnContainer" class="mt-1"></div>
+          </div>
+
+          <!-- Services table -->
+          <div class="card fade-in mt-2" style="padding:0; overflow:hidden;">
+            <div style="padding:1.2rem 1.5rem 0.75rem;">
+              <p class="section-label">Exposed Services</p>
+            </div>
+            <div style="overflow-x:auto;">
+              <table class="data-table" id="servicesTable">
+                <thead>
+                  <tr>
+                    <th>Port</th>
+                    <th>Proto</th>
+                    <th>Product</th>
+                    <th>Version</th>
+                    <th>Banner</th>
+                  </tr>
+                </thead>
+                <tbody id="servicesBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Charts row ── -->
+      <div class="charts-row mt-2">
+        <div class="card fade-in">
+          <p class="section-label">Port Distribution</p>
+          <div class="chart-wrap mt-2">
+            <canvas id="portsChart"></canvas>
+          </div>
+        </div>
+        <div class="card fade-in">
+          <p class="section-label">Service Breakdown</p>
+          <div class="chart-wrap mt-2">
+            <canvas id="servicesChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end #resultsContent -->
+  </div><!-- end .page -->
+
+  <div id="toast"></div>
+
+  <script src="results.js"></script>
+</body>
+</html>

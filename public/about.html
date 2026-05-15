@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SentinelScope — About</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── Hero banner for about page ── */
+    .about-hero {
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border);
+      padding: 4rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative angled line behind the hero text */
+    .about-hero::after {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 300px;
+      height: 300px;
+      border: 1px solid rgba(0,229,255,0.08);
+      transform: rotate(30deg);
+      pointer-events: none;
+    }
+
+    .about-hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .about-hero p.lead {
+      max-width: 640px;
+      font-size: 1.05rem;
+      color: var(--text-dim);
+      line-height: 1.8;
+      margin-top: 1rem;
+    }
+
+    /* ── Concept cards ── */
+    .concept-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Left accent stripe on concept cards */
+    .concept-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 3px;
+      background: var(--accent);
+    }
+
+    .concept-icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .concept-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-bright);
+      margin-bottom: 0.5rem;
+    }
+
+    .concept-body {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+
+    /* ── How it works steps ── */
+    .steps-list {
+      counter-reset: step-counter;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+      counter-increment: step-counter;
+    }
+
+    /* Numbered circle for each step */
+    .step-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-body {
+      padding-top: 0.3rem;
+    }
+
+    .step-title {
+      font-family: var(--font-ui);
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 0.25rem;
+    }
+
+    .step-desc {
+      font-size: 0.875rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    /* ── Stakeholder pills ── */
+    .stakeholder-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .stakeholder-pill {
+      background: rgba(0,229,255,0.06);
+      border: 1px solid rgba(0,229,255,0.2);
+      border-radius: 2px;
+      padding: 0.5rem 1.1rem;
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ── Tech stack tags ── */
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .tech-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 0.25rem 0.6rem;
+      background: rgba(0,255,157,0.08);
+      border: 1px solid rgba(0,255,157,0.25);
+      color: var(--accent-2);
+      border-radius: 2px;
+    }
+
+    /* ── Team card ── */
+    .team-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .team-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 1.4rem;
+      color: var(--bg);
+      margin: 0 auto 1rem;
+    }
+
+    .team-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 0.25rem;
+    }
+
+    .team-role {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── Disclaimer box ── */
+    .disclaimer {
+      background: rgba(255,183,0,0.06);
+      border: 1px solid rgba(255,183,0,0.25);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-top: 3rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .disclaimer-icon { font-size: 1.3rem; flex-shrink: 0; }
+
+    .disclaimer-text {
+      font-size: 0.875rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    .disclaimer-text strong { color: var(--accent-warn); }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav class="nav">
+    <div class="nav-logo">⬡ Sentinel<span>Scope</span></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="results.html">Scanner</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <div class="about-hero">
+    <div class="about-hero-inner">
+      <p class="section-label">About the Project</p>
+      <h1 class="section-title" style="font-size:2.8rem;">
+        Understanding Internet Exposure
+      </h1>
+      <p class="lead">
+        SentinelScope is an educational cybersecurity tool built to help everyday
+        users, IT teams, and students see exactly what information about their
+        systems is publicly visible on the internet — and understand why that matters.
+      </p>
+    </div>
+  </div>
+
+  <div class="page">
+
+    <!-- ── Problem statement ── -->
+    <section class="mt-4">
+      <p class="section-label">The Problem</p>
+      <h2 class="section-title">Why Exposure Monitoring Matters</h2>
+      <div class="grid-2 mt-3">
+        <div class="concept-card fade-in">
+          <div class="concept-icon">🌐</div>
+          <div class="concept-title">Hidden Attack Surfaces</div>
+          <div class="concept-body">
+            Millions of internet-connected devices — routers, servers, cameras, databases —
+            are inadvertently left exposed to the public internet without proper security
+            configurations. Owners are often completely unaware.
+          </div>
+        </div>
+        <div class="concept-card fade-in">
+          <div class="concept-icon">🔍</div>
+          <div class="concept-title">Attackers Use Shodan Too</div>
+          <div class="concept-body">
+            Tools like Shodan continuously crawl the internet and index everything they find.
+            Malicious actors already use these indexes to locate vulnerable targets. SentinelScope
+            puts the same visibility in the hands of defenders.
+          </div>
+        </div>
+        <div class="concept-card fade-in">
+          <div class="concept-icon">📊</div>
+          <div class="concept-title">Data Without Context Is Useless</div>
+          <div class="concept-body">
+            Raw Shodan data is complex and technical. SentinelScope transforms it into
+            readable dashboards, risk scores, and visual charts so non-experts can
+            understand and act on the findings.
+          </div>
+        </div>
+        <div class="concept-card fade-in">
+          <div class="concept-icon">🛡️</div>
+          <div class="concept-title">Awareness Drives Better Security</div>
+          <div class="concept-body">
+            Organizations that know about their exposed attack surface take action to secure it.
+            SentinelScope aims to be the first step in that awareness — surfacing
+            information so it can no longer be ignored.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── How it works ── -->
+    <section class="mt-5">
+      <p class="section-label">Architecture</p>
+      <h2 class="section-title">How SentinelScope Works</h2>
+      <div class="grid-2 mt-3">
+        <div class="steps-list">
+          <div class="step-item fade-in">
+            <div class="step-num">01</div>
+            <div class="step-body">
+              <div class="step-title">User Enters a Target</div>
+              <div class="step-desc">
+                A domain name or IP address is entered into the search form on the home page.
+                The target is passed as a URL parameter to the results page.
+              </div>
+            </div>
+          </div>
+          <div class="step-item fade-in">
+            <div class="step-num">02</div>
+            <div class="step-body">
+              <div class="step-title">Backend Queries Shodan</div>
+              <div class="step-desc">
+                The Express.js backend resolves domains to IPs via Shodan's DNS API,
+                then performs a full host lookup to retrieve open ports, services,
+                banner data, CVEs, and geolocation.
+              </div>
+            </div>
+          </div>
+          <div class="step-item fade-in">
+            <div class="step-num">03</div>
+            <div class="step-body">
+              <div class="step-title">Results Are Rendered</div>
+              <div class="step-desc">
+                The shaped data is sent to the frontend where Chart.js renders
+                port and service visualizations and Leaflet.js plots the target
+                location on an interactive map.
+              </div>
+            </div>
+          </div>
+          <div class="step-item fade-in">
+            <div class="step-num">04</div>
+            <div class="step-body">
+              <div class="step-title">Scan Saved to Database</div>
+              <div class="step-desc">
+                Each completed scan is written to a Supabase PostgreSQL database
+                so the history can be retrieved and displayed on the home page
+                for future reference.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tech stack breakdown -->
+        <div>
+          <div class="card fade-in">
+            <p class="section-label">Frontend</p>
+            <div class="tech-stack">
+              <span class="tech-tag">HTML5</span>
+              <span class="tech-tag">CSS3</span>
+              <span class="tech-tag">Vanilla JS</span>
+              <span class="tech-tag">Chart.js</span>
+              <span class="tech-tag">Leaflet.js</span>
+              <span class="tech-tag">Fetch API</span>
+            </div>
+          </div>
+          <div class="card fade-in mt-2">
+            <p class="section-label">Backend</p>
+            <div class="tech-stack">
+              <span class="tech-tag">Node.js</span>
+              <span class="tech-tag">Express.js</span>
+              <span class="tech-tag">node-fetch</span>
+              <span class="tech-tag">dotenv</span>
+              <span class="tech-tag">cors</span>
+            </div>
+          </div>
+          <div class="card fade-in mt-2">
+            <p class="section-label">Database & Deployment</p>
+            <div class="tech-stack">
+              <span class="tech-tag">Supabase</span>
+              <span class="tech-tag">PostgreSQL</span>
+              <span class="tech-tag">Vercel</span>
+            </div>
+          </div>
+          <div class="card fade-in mt-2">
+            <p class="section-label">External API</p>
+            <div class="tech-stack">
+              <span class="tech-tag">Shodan REST API</span>
+              <span class="tech-tag">Shodan DNS API</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Stakeholders ── -->
+    <section class="mt-5">
+      <p class="section-label">Who This Is For</p>
+      <h2 class="section-title">Target Stakeholders</h2>
+      <div class="stakeholder-grid mt-2">
+        <div class="stakeholder-pill">👤 Everyday Internet Users</div>
+        <div class="stakeholder-pill">🏪 Small Business Owners</div>
+        <div class="stakeholder-pill">🖥️ IT Administrators</div>
+        <div class="stakeholder-pill">🔐 Network Security Teams</div>
+        <div class="stakeholder-pill">🎓 Cybersecurity Students</div>
+        <div class="stakeholder-pill">🔬 Security Professionals</div>
+      </div>
+    </section>
+
+    <!-- ── Team ── -->
+    <section class="mt-5">
+      <p class="section-label">The Team</p>
+      <h2 class="section-title">Built By</h2>
+      <div class="grid-2 mt-3" style="max-width:500px;">
+        <div class="team-card fade-in">
+          <div class="team-avatar">EA</div>
+          <div class="team-name">Ethan An</div>
+          <div class="team-role">Developer</div>
+        </div>
+        <div class="team-card fade-in">
+          <div class="team-avatar">IA</div>
+          <div class="team-name">Ibukun Adenuga</div>
+          <div class="team-role">Developer</div>
+        </div>
+      </div>
+      <p class="text-dim text-sm mt-2">
+        INST 377 — University of Maryland, College Park
+      </p>
+    </section>
+
+    <!-- ── Disclaimer ── -->
+    <div class="disclaimer">
+      <div class="disclaimer-icon">⚠️</div>
+      <div class="disclaimer-text">
+        <strong>Educational Use Only.</strong> SentinelScope does not perform any active
+        scanning or probing. All data displayed is already publicly indexed by Shodan.
+        This tool is intended solely for educational purposes — to raise awareness about
+        cybersecurity exposure. Do not use this application to target systems you do not
+        own or have explicit authorization to analyze.
+      </div>
+    </div>
+
+  </div><!-- end .page -->
+
+  <div id="toast"></div>
+</body>
+</html>
