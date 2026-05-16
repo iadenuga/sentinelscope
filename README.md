@@ -34,6 +34,9 @@ Hopefully with the help of SentinelScope, we can increase awareness about attack
 - iOS Safari
 - Android Chrome
 
+# Live Deployment
+
+[View SentinelScope Live](https://sentinelscope-git-main-377-final-ethan-ibukun-s-projects.vercel.app/index.html)
 
 ## Developer Manual
 [View Developer Manual](./docs/developer-manual.md)
